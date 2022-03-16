@@ -37,4 +37,10 @@ public class Partie {
 
     @ManyToMany(mappedBy = "JOUEUR")
     private Set<Joueur> joueursSet;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "PARTIE")
+    private Set<Tour> tours;
+
 }

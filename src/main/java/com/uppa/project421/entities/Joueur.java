@@ -48,6 +48,8 @@ public class Joueur {
     @ManyToMany
     private Set<Partie> partiesSet;
 
-
-
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "JOUEUR")
+    private Set<Tour> tours;
 }
