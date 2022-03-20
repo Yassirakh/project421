@@ -33,7 +33,7 @@ public class Lance {
     @Column(name = "DES_TROIS")
     private int desTrois;
 
-    @JoinColumn(name = "ID_PARTIE")
+    @JoinColumn(name = "ID_TOUR")
     @ManyToOne(optional = false)
-    private Partie partie;
+    private Tour tour;
 }

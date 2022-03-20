@@ -8,6 +8,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 @Data
@@ -26,7 +28,7 @@ public class Joueur {
     private Long id_joueur;
 
     @Column(name = "PSEUDO")
-    private String pseudo;
+        private String pseudo;
 
     @Column(name = "MOTDEPASSE")
     private String motdepasse;
@@ -41,15 +43,37 @@ public class Joueur {
     private String ville;
 
     @JoinTable(
-            name = "JOUEUR_PARTIE",
+            name = "joueur_partie",
             joinColumns = { @JoinColumn(name = "ID_JOUEUR") },
             inverseJoinColumns = { @JoinColumn(name = "ID_PARTIE") }
     )
     @ManyToMany
-    private Set<Partie> partiesSet;
+    private Collection<Partie> partiesCollection;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "JOUEUR")
-    private Set<Tour> tours;
+            fetch = FetchType.EAGER,
+            mappedBy = "joueur")
+    private Collection<Tour> toursCollection = new ArrayList<>();
+
+    public void addPartie(Partie partie) {
+        if (this.partiesCollection == null)
+            partiesCollection = new ArrayList<>();
+        this.partiesCollection.add(partie);
+    }
+
+    public void removePartie(Partie partie) {
+        if (this.partiesCollection != null)
+            this.partiesCollection.remove(partie);
+    }
+
+    public void addTour(Tour tour) {
+        if (this.toursCollection == null)
+            toursCollection = new ArrayList<>();
+        this.toursCollection.add(tour);
+    }
+
+    public void removeTour(Tour tour) {
+        if (this.toursCollection != null)
+            this.toursCollection.remove(tour);
+    }
 }

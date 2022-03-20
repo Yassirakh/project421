@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -28,10 +30,11 @@ public class Tour {
     @Column(name = "JETONS")
     private int jetons;
 
-    @Column(name = "NBRELANCER")
+    @Column(name = "NBRLANCER")
     private int nbrelance;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DATE_FIN_TOUR")
     private Date DATE_FIN;
 
     @Column(name = "PHASE")
@@ -46,7 +49,7 @@ public class Tour {
     private Partie partie;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "TOUR")
-    private Set<Lance> lances;
+            fetch = FetchType.EAGER,
+            mappedBy = "tour")
+    private Collection<Lance> lancesCollection  = new ArrayList<>();
 }
