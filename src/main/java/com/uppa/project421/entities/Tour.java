@@ -28,7 +28,7 @@ public class Tour {
     private Long id_tour;
 
     @Column(name = "JETONS")
-    private int jetons;
+    private int jetons = 0;
 
     @Column(name = "NBRLANCER")
     private int nbrelance;
@@ -38,7 +38,7 @@ public class Tour {
     private Date DATE_FIN;
 
     @Column(name = "PHASE")
-    private String phase;
+    private int phase;
 
     @JoinColumn(name = "ID_JOUEUR")
     @ManyToOne(optional = false)
@@ -52,4 +52,16 @@ public class Tour {
             fetch = FetchType.EAGER,
             mappedBy = "tour")
     private Collection<Lance> lancesCollection  = new ArrayList<>();
+
+
+    public void addLance(Lance lance) {
+        if (this.lancesCollection == null)
+            lancesCollection = new ArrayList<>();
+        this.lancesCollection.add(lance);
+    }
+
+    public void removeLance(Lance lance) {
+        if (this.lancesCollection != null)
+            this.lancesCollection.remove(lance);
+    }
 }

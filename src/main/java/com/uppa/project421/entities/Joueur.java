@@ -47,7 +47,7 @@ public class Joueur {
             joinColumns = { @JoinColumn(name = "ID_JOUEUR") },
             inverseJoinColumns = { @JoinColumn(name = "ID_PARTIE") }
     )
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     private Collection<Partie> partiesCollection;
 
     @OneToMany(cascade = CascadeType.ALL,

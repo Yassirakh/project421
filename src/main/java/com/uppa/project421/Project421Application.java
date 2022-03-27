@@ -5,18 +5,23 @@ import com.uppa.project421.dao.LanceRepository;
 import com.uppa.project421.dao.PartieRepository;
 import com.uppa.project421.dao.TourRepository;
 import com.uppa.project421.entities.Joueur;
+import com.uppa.project421.entities.Lance;
 import com.uppa.project421.entities.Partie;
+import com.uppa.project421.entities.Tour;
 import com.uppa.project421.services.JeuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+
+@ServletComponentScan
 @SpringBootApplication
 public class Project421Application implements CommandLineRunner {
 
@@ -26,16 +31,50 @@ public class Project421Application implements CommandLineRunner {
 
     public static void main(String[] args) {
 
-        ApplicationContext context = SpringApplication.run(Project421Application.class, args);
+        SpringApplication.run(Project421Application.class, args);
     }
 
 
     @Override
     public void run(String... args) throws Exception {
-        Collection<Joueur> joueurs = jeuService.joueurAuth("buai", "mdp");
-        Joueur joueur = joueurs.iterator().next();
-        System.out.println(joueur.getPseudo());
+       /* Collection<Partie> statsPartie;
+        statsPartie = jeuService.statistiqueParties();
+        Joueur joueur = jeuService.joueurInscription(new Joueur(null, "XXXXXXXXXX", "mdp", 25, "M", "pau", null, null));
+        Collection <Joueur> coljo = new ArrayList<Joueur>();
+        coljo.add(joueur);
+        Partie partie = new Partie(null, new Date(2022,0,9), new Date(2022), null, null, null);
+        jeuService.ajoutJoueursPartie(coljo,partie);
+        jeuService.ajoutGagnantPartie(coljo.iterator().next(), partie);*/
+       /* ArrayList<Joueur> joueurs = new ArrayList<>();
+        ArrayList<Tour> tours = new ArrayList<>();
+        joueurs.add(jeuService.joueurAuth("buai", "mdp").iterator().next());
+        joueurs.add(jeuService.joueurAuth("busni2", "mdp").iterator().next());
+        Partie partie = new Partie(null, new Date(2022,0,9), new Date(2022), null, null, null);
+        jeuService.ajoutJoueursPartie(joueurs, partie);
+        System.out.println("vvv");
+        joueurs.forEach(jo -> {
+            //tours.add(jeuService.ajoutTour(new Tour(null, 0, 0, null, 1, jo, partie, null), null, partie, jo));
+            Tour tour = new Tour(null, 0, 0, null, 1, null, null, null);
+            jeuService.ajoutTour(tour, null, partie, jo);
+            Lance lance1 = jeuService.ajoutLance(tour);
+            Lance lance2 = jeuService.ajoutLance(tour);
+            Lance lance3 = jeuService.ajoutLance(tour);
+            System.out.println("Joueur : " + jo.getPseudo());
+            jo.getToursCollection().forEach(tr -> {
+                System.out.println("Tour : " + tr.getId_tour());
 
+                tr.getLancesCollection().forEach(lan -> {
+                    System.out.println("Dés 1 : " + lan.getDesUn());
+                    System.out.println("Dés 2 : " + lan.getDesDeux());
+                    System.out.println("Dés 3 : " + lan.getDesTrois());
+
+                });
+            });
+        });
+        System.out.println("PARTIE :");
+        partie.getToursCollection().forEach(tr -> {
+            System.out.println(tr.getId_tour());
+        });*/
         /*JoueurRepository joueurRepository = context.getBean(JoueurRepository.class);
         LanceRepository lanceRepository = context.getBean(LanceRepository.class);
         PartieRepository partieRepository = context.getBean(PartieRepository.class);
