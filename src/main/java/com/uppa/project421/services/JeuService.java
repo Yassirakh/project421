@@ -143,6 +143,18 @@ public class JeuService {
         }
     }
 
+    public Tour retirerJetons(Tour tour, int jetons) {
+        tour.setJetons(tour.getJetons() - jetons);
+        try {
+            tourRepository.save(tour);
+            return tour;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public Lance relanceDes(Lance old_lance, int pos_des) {
         Random r = new Random();
         Lance lance = old_lance;
