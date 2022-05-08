@@ -70,9 +70,19 @@ public class JeuService {
         }
     }
 
-    public Collection<Joueur> joueurChargement() {
+    public Collection<Joueur> joueursChargement() {
         try {
             return joueurRepository.findAll();
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public Collection<Joueur> joueurChargement(String pseudo) {
+        try {
+            return joueurRepository.findByPseudo(pseudo);
         }
         catch (Exception e) {
             return null;

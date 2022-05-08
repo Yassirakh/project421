@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- https://cdnjs.com/libraries/sockjs-client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<!-- https://cdnjs.com/libraries/stomp.js/ -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<head>
+    <link href="/css/modal.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Lobby</title>
+</head>
+<body>
+<h3>Players Lobby : </h3>
+<a id="refresh_button">Refresh players</a>
+<select name="onlineusers" id="onlineusers-select" multiple>
+    <option value="">--Please choose an option--</option>
+    <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}">
+    </option>
+</select>
+<a id="invite_button">Inviter</a>
+
+
+<script th:src="@{/js/jquery-1.10.2.min.js}"></script>
+<script th:src="@{/js/lobby.js}"></script>
+
+<div id="modal-content-received" class="modal-content">
+    <div class="modal-body">
+        <p id="invite_msg_received">test</p>
+        <a id="accept_invite_received">Accepter</a>
+        <a id="refuse_invite_received">Refuser</a>
+    </div>
+</div>
+
+
+<div id="modal-content-sent" class="modal-content">
+    <div class="modal-body">
+        <p id="invite_msg_sent">Invitation envoyée ...</p>
+        <a id="cancel_invite_sent">Annuler</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Authentification</title>
+</head>
+
+<a href="/home">Accueil.</a>
+<a href="/register">Inscription.</a>
+<body>
+<th:block th:if="${bad_auth} == true">
+    <p>Pseudo ou mot de passe incorrect, veuillez réessayer à nouveau.</p>
+</th:block>
+<form action="/auth-request" method="post">
+    <p>
+    <table>
+        <tr> <td>Pseudo</td> <td><input id="pseudo" name="pseudo" required > </td> </tr>
+        <tr> <td>Mot de passe</td> <td><input id="password" type="password" name="mdp" required > </td> </tr>
+    </table>
+    </p>
+    <p><input type="submit" value="Se connecter"></p>
+</form>
+
+
+</body>
+</html>

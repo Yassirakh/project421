@@ -15,13 +15,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 
-@ServletComponentScan
 @SpringBootApplication
 public class Project421Application implements CommandLineRunner {
 

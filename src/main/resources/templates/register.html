@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+
+<a href="/home">Accueil.</a>
+<a href="/auth">Authentification</a>
+
+<th:block th:if="${bad_auth} == true">
+    <p>Pseudo existant, veuillez choisir un autre pseudo.</p>
+</th:block>
+<form action="/register-request" onsubmit="return validateForm()" method="post">
+    <p>
+    <table>
+        <tr> <td>Pseudo</td> <td><input name="pseudo" required > </td> </tr>
+        <tr> <td>Mot de passe</td> <td><input id="mdp" type="password" name="mdp" required > </td> </tr>
+        <tr> <td>Confirmation Mot de passe</td> <td><input id="mdp2" type="password" name="confir_mdp" required > </td> </tr>
+        <tr> <td>Age</td> <td><input name="age" type="number" required > </td> </tr>
+        <tr>
+            <td>Sex</td>
+            <td>
+                <select name="sexe" id="sex" required>
+                    <option value="">--Please choose an option--</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </td>
+        </tr>
+        <tr> <td>Ville</td> <td><input name="ville" required > </td> </tr>
+    </table>
+    </p>
+    <p><input type="submit" value="S'inscrire"></p>
+</form>
+</body>
+</html>
+
+
+<script type="text/javascript">
+    var mdp = document.getElementById('mdp');
+    var mdp2 = document.getElementById('mdp2');
+    var form  = document.getElementsByTagName('form')[0];
+
+    function validateForm() {
+        console.log(document.getElementById('sex').value)
+        if (mdp.value != mdp2.value) {
+            console.log(mdp)
+            console.log(mdp2.value)
+
+            alert("Les mots de passe doivent être identiques");
+            return false;
+        }
+    }
+</script>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<!-- https://cdnjs.com/libraries/sockjs-client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<!-- https://cdnjs.com/libraries/stomp.js/ -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+</head>
+
+
+<body>
+<div id="username" th:text="${name}"></div>
+<div id="userid" th:text="${userid}"></div>
+<div>
+    <a href="/chat">Chat</a>
+    <a href="/lobby">Lobby</a>
+</div>
+
+<script th:src="@{/js/connect.js}"></script>
+
+</body>
+</html>
