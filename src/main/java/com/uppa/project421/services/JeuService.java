@@ -80,11 +80,24 @@ public class JeuService {
     }
 
 
-    public Collection<Joueur> joueurChargement(String pseudo) {
-        try {
-            return joueurRepository.findByPseudo(pseudo);
+    public Collection<Joueur> joueurChargement(String pseudo, Long id) {
+        if (pseudo != null) {
+            try {
+                return joueurRepository.findByPseudo(pseudo);
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
-        catch (Exception e) {
+        else if (id != null) {
+            try {
+                return joueurRepository.findByIdjoueur(id);
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        else {
             return null;
         }
     }
@@ -253,12 +266,12 @@ public class JeuService {
             Arrays.sort(des);
             combinaison.forEach((comb, jet) -> {
                 if (comb.equals(des)) {
-                    jetons.put(Math.toIntExact(lance.getTour().getJoueur().getId_joueur()),jet);
+                    jetons.put(Math.toIntExact(lance.getTour().getJoueur().getIdjoueur()),jet);
                     found.set(1);
                 }
             });
             if (found.get() == 0) {
-                jetons.put(Math.toIntExact(lance.getTour().getJoueur().getId_joueur()),1);
+                jetons.put(Math.toIntExact(lance.getTour().getJoueur().getIdjoueur()),1);
             }
         });
         return jetons;
@@ -293,7 +306,7 @@ public class JeuService {
                     stat.setPartieGagnees(stat.getPartieGagnees() + 1);
                 }
                 par.getToursCollection().forEach(tour ->{
-                    if (tour.getJoueur().getId_joueur().equals(jo.getId_joueur())) {
+                    if (tour.getJoueur().getIdjoueur().equals(jo.getIdjoueur())) {
                         if (tour.getPhase() == 1) {
                             chargeTours.add(tour);
                             System.out.println(tour.getId_tour() + " " + tour.getJetons());
@@ -337,7 +350,7 @@ public class JeuService {
                 stat.setJetonsDechargePrct(0);
             }
             stats.put(jo.getPseudo(), stat);
-            System.out.println( jo.getId_joueur() + " " + stat.toString());
+            System.out.println( jo.getIdjoueur() + " " + stat.toString());
         });
         return stats;
     }

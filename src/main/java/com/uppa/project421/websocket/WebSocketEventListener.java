@@ -1,5 +1,6 @@
 package com.uppa.project421.websocket;
 
+import com.uppa.project421.entities.Joueur;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,6 +27,9 @@ public class WebSocketEventListener {
 
     public static Map<Integer, String> onlinePlayers = new HashMap<Integer, String>();
 
+    public static Collection<Integer> inGamePlayersId = new ArrayList<Integer>();
+
+    public static Map<Long, ArrayList<Joueur>> games = new HashMap<Long, ArrayList<Joueur>>();
 
     @EventListener
         public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -47,7 +49,6 @@ public class WebSocketEventListener {
             }
             if (index.toString().equals("username") || index.toString().equals("userId")) {
                 addUserOnline.set(true);
-                username.set(removeFirstandLast(header.toString()));
             }
         });
         if (addUserOnline.get() == true) {

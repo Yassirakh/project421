@@ -5,6 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <!-- https://cdnjs.com/libraries/stomp.js/ -->
 <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <head>
     <link href="/css/modal.css" rel="stylesheet">
     <meta charset="UTF-8">
@@ -19,10 +20,6 @@
     </option>
 </select>
 <a id="invite_button">Inviter</a>
-
-
-<script th:src="@{/js/jquery-1.10.2.min.js}"></script>
-<script th:src="@{/js/lobby.js}"></script>
 
 <div id="modal-content-received" class="modal-content">
     <div class="modal-body">
@@ -40,4 +37,6 @@
     </div>
 </div>
 </body>
+<script th:src="@{/js/jquery-1.10.2.min.js}"></script>
+<script th:src="@{/js/lobby.js}"></script>
 </html>

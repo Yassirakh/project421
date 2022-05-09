@@ -1,0 +1,23 @@
+<script>localStorage.setItem("partieId",${})</script>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- https://cdnjs.com/libraries/sockjs-client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<!-- https://cdnjs.com/libraries/stomp.js/ -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Partie</title>
+</head>
+<body>
+Partie : <span id="partieId" th:text="${id_partie}"></span></br>
+Liste des joueur : <ol id="playersList">
+
+</ol>
+</body>
+
+<script th:src="@{/js/jquery-1.10.2.min.js}"></script>
+<script th:src="@{/js/game.js}"></script>
+</html>

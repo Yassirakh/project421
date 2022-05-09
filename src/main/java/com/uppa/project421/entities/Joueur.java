@@ -25,7 +25,7 @@ public class Joueur {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_JOUEUR")
-    private Long id_joueur;
+    private Long idjoueur;
 
     @Column(name = "PSEUDO")
         private String pseudo;

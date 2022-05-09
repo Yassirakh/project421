@@ -7,5 +7,6 @@ import java.util.Collection;
 
 public interface JoueurRepository extends JpaRepository<Joueur, Long> {
     public Collection<Joueur> findByPseudo(String pseudo);
+    public Collection<Joueur> findByIdjoueur(Long Id);
     public Collection<Joueur> findByPseudoAndMotdepasse(String pseudo, String motdepasse);
 }
