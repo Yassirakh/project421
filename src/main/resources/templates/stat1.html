@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistique Joueurs</title>
+</head>
+<body>
+<div>
+    <a href="/menu">Menu</a>
+</div>
+<th:block th:each="stat : ${stats}">
+    <p>Joueur : <span th:text="${stat.key}"></span>, a joue : <span th:text="${stat.value.partieJouees}"></span>, a gagne : <span th:text="${stat.value.partieGagnees}"></span> / <span th:text="${stat.value.partieGagneesPrct}"></span>,
+        Moyenne jetons charge : <span th:text="${stat.value.jetonsChargePrct}"></span>, Moyenne jetons decharge : <span th:text="${stat.value.jetonsDechargePrct}"></span></p>
+</th:block>
+</body>
+</html>

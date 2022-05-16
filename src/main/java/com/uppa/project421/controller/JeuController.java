@@ -207,4 +207,32 @@ public class JeuController {
         jeuService.ajoutJetons(tour, data.get(0).intValue());
         return "success";
     }
+
+
+    @RequestMapping(value = "/removeFromInGamePlayers", method = RequestMethod.POST)
+    public String removeFromInGamePlayers(@RequestBody Integer plalyerID) {
+        inGamePlayersId.removeAll(Arrays.asList(plalyerID));
+        return "lobby";
+    }
+
+    @RequestMapping("/stat1")
+    public String stat1(Model model, HttpServletRequest req, HttpServletResponse resp) {
+        model.addAttribute("stats", jeuService.statistiqueJoueur(jeuService.joueursChargement()));
+        return "stat1";
+    }
+
+    @RequestMapping("/stat2")
+    public String stat2(Model model, HttpServletRequest req, HttpServletResponse resp) {
+        model.addAttribute("stats", jeuService.statistiqueParties());
+        return "stat2";
+    }
+
+    @RequestMapping("/menu")
+    public String menu(Model model, HttpServletRequest req, HttpServletResponse resp) {
+        Joueur joueur = (Joueur) httpSession.getAttribute("joueur");
+
+        model.addAttribute("name", joueur.getPseudo());
+        model.addAttribute("userid", joueur.getIdjoueur());
+        return "menu";
+    }
 }

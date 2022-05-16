@@ -31,6 +31,7 @@ function onConnected() {
     stompClient.subscribe('/topic/lobby', relanceDesDonnes);
     stompClient.subscribe('/topic/lobby', loserJetons);
     stompClient.subscribe('/topic/lobby', updateTokensUI);
+    stompClient.subscribe('/topic/lobby', relanceDone);
     console.log('before listplayergame')
     $.ajax({
         type: "POST",
@@ -89,6 +90,7 @@ function startTourCharge(data) {
             console.log(username)
             if (data[0] == username) {
                 $("#create_charge").css("display", "block");
+                $("#create_charge").css("color", "blue");
                 console.log("You are the one to play now")
             }
 
@@ -133,6 +135,7 @@ function nextTourCharge(data) {
             if (whichPlayerToPlay != currentplayers.length) {
                 if (username == currentplayers[whichPlayerToPlay]) {
                     $("#create_charge").css("display", "block");
+                    $("#create_charge").css("color", "blue");
                 }
             }
             else {
@@ -203,15 +206,16 @@ function nextTourCharge(data) {
 
 function relanceDesDonnes(data) {
     data = data.body.split('/')
-    //TODO : add partie check
-    if (data[1] == "relanceDesDonnes" && relance_done == 0) {
-        relance_done = 1;
+    if (data[1] == partieid && data[2] == "relanceDesDonnes" && relance_done == 0) {
+        stompClient.send("/app/lobby.relanceDone", {}, partieid);
         data = data[0];
         let json_data = JSON.parse(data)
+        console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
+        console.log(json_data)
+        relance_done = 1;
         console.log("apres relancement ");
         console.log(data);
         let minimum = 7;
-
         var div = document.getElementById("game-details");
         Object.keys(json_data).forEach(function(key) {
             var span = document.createElement("span");
@@ -264,7 +268,7 @@ function loserJetons(data) {
                 data: JSON.stringify([max_token, toursIds[toursIds.length - 1]]),
                 success: function (data) {
                     console.log('success on add token')
-                    stompClient.send("/app/lobby.updateTokensUI", {},  JSON.parse(JSON.stringify([username, max_token])));
+                    stompClient.send("/app/lobby.updateTokensUI", {},  JSON.parse(JSON.stringify([username, max_token, partieid])));
                 }
             })
         }
@@ -277,37 +281,45 @@ function updateTokensUI(data) {
         data = data[0].split(',');
         console.log('updateTokensUI')
         console.log(data)
-        let max_token = data[1]
-        data = data[0]
-        joueur_jetons[data] = parseInt(joueur_jetons[data]) + parseInt(max_token);
-        pot -= max_token
-        $('#jetons-pot').empty();
-        var span = document.getElementById("jetons-pot");
-        span.appendChild(document.createTextNode("Le pot contient : " + pot))
+        if (data[2] == partieid) {
+            let max_token = data[1]
+            data = data[0]
+            joueur_jetons[data] = parseInt(joueur_jetons[data]) + parseInt(max_token);
+            pot -= max_token
+            $('#jetons-pot').empty();
+            var span = document.getElementById("jetons-pot");
+            span.appendChild(document.createTextNode("Le pot contient : " + pot))
 
-        $('#playersJetonsList').empty();
-        var ol = document.getElementById("playersJetonsList");
-        Object.keys(joueur_jetons).forEach(function(key) {
-            var li = document.createElement("li");
-            li.appendChild(document.createTextNode(key + ' : ' + joueur_jetons[key]));
-            ol.appendChild(li);
-        });
-        update_done = 0;
-        relance_done = 0;
-        //checkNenette();
+            $('#playersJetonsList').empty();
+            var ol = document.getElementById("playersJetonsList");
+            Object.keys(joueur_jetons).forEach(function (key) {
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(key + ' : ' + joueur_jetons[key]));
+                ol.appendChild(li);
+            });
+            update_done = 0;
+            relance_done = 0;
+            //checkNenette();
 
-        if (pot > 0) {
+            if (pot > 0) {
 
-            whichPlayerToPlay = 0
-            var data = [playersOrder[whichPlayerToPlay], partieid]
-            stompClient.send("/app/lobby.startTourCharge", {}, data);
+                whichPlayerToPlay = 0
+                var data = [playersOrder[whichPlayerToPlay], partieid]
+                stompClient.send("/app/lobby.startTourCharge", {}, data);
+            } else {
+                var div = document.getElementById("game-details");
+                var span = document.createElement("span");
+                span.appendChild(document.createTextNode("Phase de charge est terminee"));
+                div.appendChild(span);
+            }
         }
-        else {
-            var div = document.getElementById("game-details");
-            var span = document.createElement("span");
-            span.appendChild(document.createTextNode("Phase de charge est terminee"));
-            div.appendChild(span);
-        }
+    }
+}
+
+function relanceDone(data) {
+    data = data.body.split('/')
+    if (data[0] == partieid && data[1] == 'relanceDone') {
+        relance_done = 1;
     }
 }
 
@@ -324,6 +336,7 @@ function createCharge (event) {
     if (toursIds.length > 0) {
         data.push(toursIds[toursIds.length - 1])
     }
+    $("#create_charge").css("color", "red");
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -334,11 +347,13 @@ function createCharge (event) {
             console.log("old tours : " + toursIds)
             $("#create_charge").css("display", "none");
             $("#play_charge").css("display", "block");
+            $("#play_charge").css("color", "blue");
         }
     })
 }
 
 function playCharge(event) {
+    $("#play_charge").css("color", "red");
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -355,6 +370,7 @@ function playCharge(event) {
 $(document).ready(function() {
     $("#create_charge").click(createCharge);
     $("#play_charge").click(playCharge);
+    $("#back_to_lobby").click(backToLobby);
     $("span").after("<br />");
 });
 
@@ -367,7 +383,7 @@ function relancedes (count_ppl) {
     var br = document.createElement("br");
     div.appendChild(br);
 
-    stompClient.send("/app/lobby.relanceDesDonnes", {}, count_ppl);
+    stompClient.send("/app/lobby.relanceDesDonnes", {}, JSON.parse(JSON.stringify([count_ppl, partieid])));
 }
 
 function checkNenette() {
@@ -418,9 +434,33 @@ function checkNenette() {
         stompClient.send("/app/lobby.startTourCharge", {}, data);
     }
     else {
+        $("#back_to_lobby").css("opacity", 1);
+        $("#back_to_lobby").removeClass( "quit-button" )
+        $("a").removeClass( "quit-button" )
+
         var div = document.getElementById("game-details");
         var span = document.createElement("span");
         span.appendChild(document.createTextNode("Phase de charge est terminee"));
         div.appendChild(span);
+        var quit = document.getElementById("back_to_lobby");
+        quit.style.opacity = 1
+        console.log('la fin')
+
     }
+}
+
+function backToLobby(event) {
+    //$("#back_to_lobby").css("color", "red");
+    console.log("going back to lobby")
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/removeFromInGamePlayers",
+        data: JSON.stringify(id),
+        success: function (data) {
+            console.log('success on remove From In Game Players')
+            window.location.href = '/lobby'
+        }
+    });
 }

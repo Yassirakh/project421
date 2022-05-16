@@ -2,3 +2,12 @@
 .play-button {
     display: none;
 }
+/* Modal Header */
+.quit-button {
+    opacity: 0;
+}
+
+a {
+    color: blue;
+    cursor: pointer;
+}

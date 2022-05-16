@@ -105,7 +105,15 @@ public class WebSocketController {
     @MessageMapping("/lobby.relanceDesDonnes")
     @SendTo("/topic/lobby")
     public String relanceDesDonnes(@Payload String minimum_players, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("TEEEEEEEEEST");
+        System.out.println(minimum_players);
         List<String> minimum_players_array = new ArrayList<String>(Arrays.asList(minimum_players.split(",")));
+        String partie_id =  minimum_players_array.get(minimum_players_array.size() - 1);
+        System.out.println(partie_id);
+        minimum_players_array.remove(minimum_players_array.size() - 1);
+        minimum_players_array.forEach(m -> {
+            System.out.println(m);
+        });
         int size = minimum_players_array.size();
         Map<String, Integer> playerDes = new HashMap<String, Integer>();
         int i = 0;
@@ -122,7 +130,9 @@ public class WebSocketController {
             }
         }
         JSONObject json = new JSONObject(playerDes);
-        return json.toString().concat("/relanceDesDonnes");
+        String res = json.toString().concat("/").concat(partie_id).concat("/relanceDesDonnes");
+        System.out.println(res);
+        return res;
     }
 
     @MessageMapping("/lobby.loserJeton")
@@ -137,5 +147,11 @@ public class WebSocketController {
         System.out.println("loser");
         System.out.println(loser);
         return loser.concat("/updateTokensUI");
+    }
+
+    @MessageMapping("/lobby.relanceDone")
+    @SendTo("/topic/lobby")
+    public String relanceDone(@Payload String partieId, SimpMessageHeaderAccessor headerAccessor) {
+        return partieId.concat("/relanceDone");
     }
 }

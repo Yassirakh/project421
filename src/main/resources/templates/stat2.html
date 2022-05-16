@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistique Joueurs</title>
+</head>
+<body>
+<div>
+    <a href="/menu">Menu</a>
+</div>
+<th:block th:each="par : ${stats}">
+    <h3><b>Partie :</b><span th:text="${par.idpartie}"></span></h3>
+
+    <th:block th:each="tour : ${par.toursCollection}">
+        <div th:if="${tour.phase == 1}">
+            <p>Tour : <span th:text="${tour.idtour}"></span> <i>Type de tour : Décharge</i></p>
+            <p>Joueur : <span th:text="${tour.joueur.pseudo}"></span></p>
+            <th:block th:each="lance : ${tour.lancesCollection}">
+                <p>Lance : <span th:text="${lance.idlance}"></span> <i>Des un : <span th:text="${lance.desUn}"></span></i> <i>Des deux : <span th:text="${lance.desDeux}"></span></i> <i>Des trois : <span th:text="${lance.desTrois}"></span></i></p>
+            </th:block>
+        </div>
+        <!-- ELSE -->
+        <div th:unless="${tour.phase == 0}">
+            <p><span th:text="${tour.idtour}"></span> <i>Type de tour : Charge</i></p>
+            <th:block th:each="lance : ${tour.lancesCollection}">
+                <p>Lance : <span th:text="${lance.idlance}"></span> <i>Des un : <span th:text="${lance.desUn}"></span></i> <i>Des deux : <span th:text="${lance.desDeux}"></span></i> <i>Des trois : <span th:text="${lance.desTrois}"></span></i></p>
+            </th:block>
+        </div>
+    </th:block>
+</th:block>
+</body>
+</html>
