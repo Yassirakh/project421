@@ -17,6 +17,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/chat-text").withSockJS().setInterceptors(handshakeInterceptor);
         registry.addEndpoint("/connect").withSockJS().setInterceptors(handshakeInterceptor);
         registry.addEndpoint("/lobby").withSockJS().setInterceptors(handshakeInterceptor);
+        registry.addEndpoint("/game").withSockJS().setInterceptors(handshakeInterceptor);
     }
 
     @Override

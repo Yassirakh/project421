@@ -22,7 +22,7 @@ public class Lance {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_LANCE")
-    private Long id_lance;
+    private Long idlance;
 
     @Column(name = "DES_UN")
     private int desUn;

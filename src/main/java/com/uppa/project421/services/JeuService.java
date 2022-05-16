@@ -25,27 +25,27 @@ public class JeuService {
     @Autowired
     private TourRepository tourRepository;
 
-    private Map<int[], Integer> combinaison;
+    private Map<Integer[], Integer> combinaison;
 
     public JeuService() {
         this.combinaison = new HashMap<>();
-        this.combinaison.put(new int[]{4,2,1}, 10);
-        this.combinaison.put(new int[]{1,1,1}, 7);
-        this.combinaison.put(new int[]{6,1,1}, 6);
-        this.combinaison.put(new int[]{6,6,6}, 6);
-        this.combinaison.put(new int[]{5,1,1}, 5);
-        this.combinaison.put(new int[]{5,5,5}, 5);
-        this.combinaison.put(new int[]{4,1,1}, 4);
-        this.combinaison.put(new int[]{4,4,4}, 4);
-        this.combinaison.put(new int[]{3,1,1}, 3);
-        this.combinaison.put(new int[]{3,3,3}, 3);
-        this.combinaison.put(new int[]{2,1,1}, 3);
-        this.combinaison.put(new int[]{2,2,2}, 3);
-        this.combinaison.put(new int[]{6,5,4}, 2);
-        this.combinaison.put(new int[]{5,4,3}, 2);
-        this.combinaison.put(new int[]{4,3,2}, 2);
-        this.combinaison.put(new int[]{3,2,1}, 2);
-        this.combinaison.put(new int[]{2,2,1}, 2);
+        this.combinaison.put(new Integer[]{4,2,1}, 10);
+        this.combinaison.put(new Integer[]{1,1,1}, 7);
+        this.combinaison.put(new Integer[]{6,1,1}, 6);
+        this.combinaison.put(new Integer[]{6,6,6}, 6);
+        this.combinaison.put(new Integer[]{5,1,1}, 5);
+        this.combinaison.put(new Integer[]{5,5,5}, 5);
+        this.combinaison.put(new Integer[]{4,1,1}, 4);
+        this.combinaison.put(new Integer[]{4,4,4}, 4);
+        this.combinaison.put(new Integer[]{3,1,1}, 3);
+        this.combinaison.put(new Integer[]{3,3,3}, 3);
+        this.combinaison.put(new Integer[]{2,1,1}, 3);
+        this.combinaison.put(new Integer[]{2,2,2}, 3);
+        this.combinaison.put(new Integer[]{6,5,4}, 2);
+        this.combinaison.put(new Integer[]{5,4,3}, 2);
+        this.combinaison.put(new Integer[]{4,3,2}, 2);
+        this.combinaison.put(new Integer[]{3,2,1}, 2);
+        this.combinaison.put(new Integer[]{2,2,1}, 2);
     }
 
     public Joueur joueurInscription(Joueur joueur) {
@@ -134,6 +134,24 @@ public class JeuService {
         return partie;
     }
 
+    public Collection<Tour> tourChargement(Long id) {
+        try {
+            return tourRepository.findByIdtour(id);
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Collection<Partie> partieChargement(Long id) {
+        try {
+            return partieRepository.findByIdpartie(id);
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
     public Tour ajoutTour(Tour tour, Tour tour_prec, Partie partie, Joueur joueur) {
         if (tour_prec != null) {
             tour.setJetons(tour_prec.getJetons());
@@ -178,10 +196,20 @@ public class JeuService {
         }
     }
 
+    public Collection<Lance> lanceChargement(Long Id) {
+        try {
+            return lanceRepository.findByIdlance(Id);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public Lance relanceDes(Lance old_lance, int pos_des) {
         Random r = new Random();
         Lance lance = old_lance;
-        lance.setId_lance(null);
+        lance.setIdlance(null);
         if (pos_des == 1) {
             lance.setDesUn(r.nextInt((6 - 1) + 1) + 1);
         }
@@ -254,26 +282,31 @@ public class JeuService {
     }
 
 
-    public Map<Integer, Integer> jetonsCombinaisons(Collection<Lance> lances) {
-        Map<Integer, Integer> jetons = null;
+    public Map<String, Integer> jetonsCombinaisons(Collection<Lance> lances) {
+        Map<String, Integer> jetons = new HashMap<String, Integer>();
         lances.forEach(lance -> {
             AtomicInteger found = new AtomicInteger();
-            found.set(1);
-            int[] des = new int[3];
+            found.set(0);
+            Integer[] des = new Integer[3];
             des[0] = lance.getDesUn();
             des[1] = lance.getDesDeux();
             des[2] = lance.getDesTrois();
-            Arrays.sort(des);
+            Arrays.sort(des, Collections.reverseOrder());
             combinaison.forEach((comb, jet) -> {
-                if (comb.equals(des)) {
-                    jetons.put(Math.toIntExact(lance.getTour().getJoueur().getIdjoueur()),jet);
+                if (comb[0] == des[0] && comb[1] == des[1] && comb[2] == des[2]) {
+                //if (comb.equals(des)) {
+                    System.out.println("equales");
+                    jetons.put(lance.getTour().getJoueur().getPseudo(),jet);
                     found.set(1);
                 }
             });
             if (found.get() == 0) {
-                jetons.put(Math.toIntExact(lance.getTour().getJoueur().getIdjoueur()),1);
+                jetons.put(lance.getTour().getJoueur().getPseudo(),1);
             }
         });
+        System.out.println("jetons");
+        System.out.println(jetons.toString());
+
         return jetons;
     }
 
@@ -309,7 +342,7 @@ public class JeuService {
                     if (tour.getJoueur().getIdjoueur().equals(jo.getIdjoueur())) {
                         if (tour.getPhase() == 1) {
                             chargeTours.add(tour);
-                            System.out.println(tour.getId_tour() + " " + tour.getJetons());
+                            System.out.println(tour.getIdtour() + " " + tour.getJetons());
                         }
                         else {
                             dechargeTours.add(tour);

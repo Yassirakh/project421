@@ -8,14 +8,24 @@
 <!-- https://cdnjs.com/libraries/stomp.js/ -->
 <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <head>
+    <link href="/css/game.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Partie</title>
 </head>
 <body>
 Partie : <span id="partieId" th:text="${id_partie}"></span></br>
-Liste des joueur : <ol id="playersList">
+Liste des joueur : <ol id="playersList"></ol>
+<span id="phaseName"></span>
 
-</ol>
+<div id="game-details">
+    <span id="jetons_available"></span>
+    Liste des joueur avec leurs jetons : <ol id="playersJetonsList"></ol>
+    <span id="jetons-pot"></span>
+</div>
+<a class="play-button" id="create_charge">Creer mon tour</a>
+<a class="play-button" id="play_charge">Lancer</a>
+<a class="play-button" id="play_decharge">Lancer</a>
+
 </body>
 
 <script th:src="@{/js/jquery-1.10.2.min.js}"></script>

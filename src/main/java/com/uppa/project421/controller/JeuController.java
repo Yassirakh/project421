@@ -1,11 +1,14 @@
 package com.uppa.project421.controller;
 
 import com.uppa.project421.entities.Joueur;
+import com.uppa.project421.entities.Lance;
 import com.uppa.project421.entities.Partie;
+import com.uppa.project421.entities.Tour;
 import com.uppa.project421.services.JeuService;
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.JobExecutionEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -131,7 +134,7 @@ public class JeuController {
         }
         Partie partie = new Partie(null, new Date(System.currentTimeMillis()), null, null, null, null);
         jeuService.ajoutJoueursPartie(players, partie);
-        Long id_partie = partie.getId_partie();
+        Long id_partie = partie.getIdpartie();
         games.put(id_partie, players);
         return id_partie.toString();
     }
@@ -151,5 +154,57 @@ public class JeuController {
             gamePlayers.add(play.getPseudo());
         });
         return gamePlayers.toArray();
+    }
+
+
+    @RequestMapping(value = "/createChargeTour", method = RequestMethod.POST)
+    public @ResponseBody String createChargeTour(@RequestBody ArrayList<Long> joueur_partie_tour) {
+        Tour tour_prec_collec = null;
+        if (joueur_partie_tour.size() >= 3) {
+                tour_prec_collec = jeuService.tourChargement(joueur_partie_tour.get(2)).iterator().next();
+        }
+        Partie partie = jeuService.partieChargement(joueur_partie_tour.get(1)).iterator().next();
+        Joueur joueur = jeuService.joueurChargement(null, joueur_partie_tour.get(0)).iterator().next();
+        Tour tour = new Tour(null, 0, 0, null, 1, null, null, null);
+        tour = jeuService.ajoutTour(tour, tour_prec_collec, partie, joueur);
+
+        return tour.getIdtour().toString();
+    }
+
+    @RequestMapping(value = "/createChargeLance", method = RequestMethod.POST)
+    public @ResponseBody Object[] createChargeLance(@RequestBody Long tourId) {
+        Tour tour = jeuService.tourChargement(tourId).iterator().next();
+        Lance lance = jeuService.ajoutLance(tour);
+        ArrayList<Integer> lance_data = new ArrayList<Integer>();
+        lance_data.add(lance.getDesUn());
+        lance_data.add(lance.getDesDeux());
+        lance_data.add(lance.getDesTrois());
+        lance_data.add(lance.getIdlance().intValue());
+        lance_data.add(tour.getJoueur().getIdjoueur().intValue());
+        lance_data.add(tour.getPartie().getIdpartie().intValue());
+        return lance_data.toArray();
+    }
+
+    @RequestMapping(value = "/combinaisonsLances", method = RequestMethod.POST)
+    public @ResponseBody String combinaisonsLances(@RequestBody ArrayList<Long> data) {
+        Collection<Lance> lances = new ArrayList<Lance>();
+        data.forEach(id -> {
+            lances.add(jeuService.lanceChargement(id).iterator().next());
+
+        });
+
+        Map<String, Integer> jeuCombinaison = jeuService.jetonsCombinaisons(lances);
+        JSONObject json = new JSONObject(jeuCombinaison);
+        System.out.println(json.toString());
+        return json.toString();
+    }
+
+
+    @RequestMapping(value = "/addTokenToTour", method = RequestMethod.POST)
+    public @ResponseBody String addTokenToTour(@RequestBody ArrayList<Long> data) {
+        System.out.println("add token to tour " + data.get(1));
+        Tour tour = jeuService.tourChargement(data.get(1)).iterator().next();
+        jeuService.ajoutJetons(tour, data.get(0).intValue());
+        return "success";
     }
 }

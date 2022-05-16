@@ -25,7 +25,7 @@ public class Tour {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_TOUR")
-    private Long id_tour;
+    private Long idtour;
 
     @Column(name = "JETONS")
     private int jetons = 0;

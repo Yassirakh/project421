@@ -9,5 +9,6 @@ import java.util.Collection;
 
 public interface TourRepository extends JpaRepository<Tour, Long> {
     public Collection<Tour> findByJoueurAndPartieAndPhase(Joueur joueur, Partie partie, int phase);
+    public Collection<Tour> findByIdtour(Long id);
 
 }

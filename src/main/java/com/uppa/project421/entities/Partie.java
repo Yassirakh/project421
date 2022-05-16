@@ -25,7 +25,7 @@ public class Partie {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_PARTIE")
-    private Long id_partie;
+    private Long idpartie;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date DATE_DEBUT;

@@ -1,10 +1,13 @@
 package com.uppa.project421.websocket;
 
+import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
+
+import java.util.*;
 
 @Controller
 public class WebSocketController {
@@ -76,4 +79,63 @@ public class WebSocketController {
         return ids;
     }
 
+    @MessageMapping("/lobby.startCharge")
+    @SendTo("/topic/lobby")
+    public String startCharge(@Payload String usernames, SimpMessageHeaderAccessor headerAccessor) {
+        usernames = usernames.concat("/startCharge");
+        return usernames;
+    }
+
+
+    @MessageMapping("/lobby.startTourCharge")
+    @SendTo("/topic/lobby")
+    public String startTourCharge(@Payload String username, SimpMessageHeaderAccessor headerAccessor) {
+        username = username.concat("/startTourCharge");
+        return username;
+    }
+
+    @MessageMapping("/lobby.nextTourCharge")
+    @SendTo("/topic/lobby")
+    public String nextTourCharge(@Payload String lance_details, SimpMessageHeaderAccessor headerAccessor) {
+        lance_details = lance_details.concat("/nextTourCharge");
+        return lance_details;
+    }
+
+
+    @MessageMapping("/lobby.relanceDesDonnes")
+    @SendTo("/topic/lobby")
+    public String relanceDesDonnes(@Payload String minimum_players, SimpMessageHeaderAccessor headerAccessor) {
+        List<String> minimum_players_array = new ArrayList<String>(Arrays.asList(minimum_players.split(",")));
+        int size = minimum_players_array.size();
+        Map<String, Integer> playerDes = new HashMap<String, Integer>();
+        int i = 0;
+        ArrayList numbers = new ArrayList();
+        Random random = new Random();
+        while (numbers.size() < size) {
+            //Get Random numbers between range
+            int randomNumber = random.nextInt((6 - 1) + 1) + 1;
+            //Check for duplicate values
+            if (!numbers.contains(randomNumber)) {
+                numbers.add(randomNumber);
+                playerDes.put(minimum_players_array.get(i), randomNumber);
+                i++;
+            }
+        }
+        JSONObject json = new JSONObject(playerDes);
+        return json.toString().concat("/relanceDesDonnes");
+    }
+
+    @MessageMapping("/lobby.loserJeton")
+    @SendTo("/topic/lobby")
+    public String loserJeton(@Payload String loser, SimpMessageHeaderAccessor headerAccessor) {
+        return loser.concat("/loserJeton");
+    }
+
+    @MessageMapping("/lobby.updateTokensUI")
+    @SendTo("/topic/lobby")
+    public String updateTokensUI(@Payload String loser, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("loser");
+        System.out.println(loser);
+        return loser.concat("/updateTokensUI");
+    }
 }
