@@ -149,6 +149,14 @@ public class WebSocketController {
         return loser.concat("/updateTokensUI");
     }
 
+    @MessageMapping("/lobby.updateTokensUIAfterNenette")
+    @SendTo("/topic/lobby")
+    public String updateTokensUIAfterNenette(@Payload String loser, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("loser nenette");
+        System.out.println(loser);
+        return loser.concat("/updateTokensUIAfterNenette");
+    }
+
     @MessageMapping("/lobby.relanceDone")
     @SendTo("/topic/lobby")
     public String relanceDone(@Payload String partieId, SimpMessageHeaderAccessor headerAccessor) {

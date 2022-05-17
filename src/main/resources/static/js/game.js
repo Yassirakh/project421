@@ -32,6 +32,7 @@ function onConnected() {
     stompClient.subscribe('/topic/lobby', loserJetons);
     stompClient.subscribe('/topic/lobby', updateTokensUI);
     stompClient.subscribe('/topic/lobby', relanceDone);
+    stompClient.subscribe('/topic/lobby', updateTokensUIAfterNenette);
     console.log('before listplayergame')
     $.ajax({
         type: "POST",
@@ -299,10 +300,9 @@ function updateTokensUI(data) {
             });
             update_done = 0;
             relance_done = 0;
-            //checkNenette();
 
             if (pot > 0) {
-
+                checkNenette();
                 whichPlayerToPlay = 0
                 var data = [playersOrder[whichPlayerToPlay], partieid]
                 stompClient.send("/app/lobby.startTourCharge", {}, data);
@@ -316,6 +316,49 @@ function updateTokensUI(data) {
     }
 }
 
+function updateTokensUIAfterNenette(data) {
+    data = data.body.split('/')
+    if (data[1] == 'updateTokensUIAfterNenette') {
+        data = data[0].split(',');
+        console.log('updateTokensUIAfterNenette')
+        console.log(data)
+        if (data[2] == partieid) {
+            let max_token = data[1]
+            data = data[0]
+            if (pot > 1){
+                pot -= max_token
+                joueur_jetons[data] = parseInt(joueur_jetons[data]) + parseInt(max_token);
+            }
+            else if (pot == 1){
+                pot -= 1
+                joueur_jetons[data] = parseInt(joueur_jetons[data]) + 1;
+            }
+            $('#jetons-pot').empty();
+            var span = document.getElementById("jetons-pot");
+            span.appendChild(document.createTextNode("Le pot contient : " + pot))
+
+            $('#playersJetonsList').empty();
+            var ol = document.getElementById("playersJetonsList");
+            Object.keys(joueur_jetons).forEach(function (key) {
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(key + ' : ' + joueur_jetons[key]));
+                ol.appendChild(li);
+            });
+            update_done = 0;
+            relance_done = 0;
+
+            if (pot < 1) {
+                $("#play_charge").css("display", "none");
+                $("#create_charge").css("display", "none");
+
+                var div = document.getElementById("game-details");
+                var span = document.createElement("span");
+                span.appendChild(document.createTextNode("Phase de charge est terminee"));
+                div.appendChild(span);
+            }
+        }
+    }
+}
 function relanceDone(data) {
     data = data.body.split('/')
     if (data[0] == partieid && data[1] == 'relanceDone') {
@@ -413,23 +456,38 @@ function checkNenette() {
             break;
         }
     }
-    if (found_nenette == 1 && pot > 1) {
-        /*if (username == playersOrder[found_nenette_joueur]) {
+    console.log('found nenette ' + found_nenette)
+    console.log('found nenette joueur' + found_nenette_joueur)
+    if (found_nenette == 1 && pot > 0) {
+        if (username == playersOrder[found_nenette_joueur]) {
             $.ajax({
                 type: "POST",
                 contentType: "application/json",
                 url: "/addTokenToTour",
                 data: JSON.stringify([2, toursIds[toursIds.length - 1]]),
                 success: function (data) {
-                    console.log('success on add token')
-                    stompClient.send("/app/lobby.updateTokensUIAfterNenette", {},  JSON.parse(JSON.stringify([username, 2])));
+                    console.log('success on add token nenette')
+                    if (pot == 1) {
+                        stompClient.send("/app/lobby.updateTokensUIAfterNenette", {},  JSON.parse(JSON.stringify([username, 1, partieid])));
+                    }
+                    else if (pot > 1) {
+                        stompClient.send("/app/lobby.updateTokensUIAfterNenette", {},  JSON.parse(JSON.stringify([username, 2, partieid])));
+                    }
                 }
             })
-        }*/
+            console.log("NENETTE MATE")
+        }
     }
-    else {
+    if (pot < 1) {
+        $("#play_charge").css("display", "none");
+        $("#create_charge").css("display", "none");
+
+        var div = document.getElementById("game-details");
+        var span = document.createElement("span");
+        span.appendChild(document.createTextNode("Phase de charge est terminee"));
+        div.appendChild(span);
     }
-    if (pot > 0) {
+   /* if (pot > 0) {
         var data = [playersOrder[whichPlayerToPlay], partieid]
         stompClient.send("/app/lobby.startTourCharge", {}, data);
     }
@@ -446,7 +504,7 @@ function checkNenette() {
         quit.style.opacity = 1
         console.log('la fin')
 
-    }
+    }*/
 }
 
 function backToLobby(event) {
